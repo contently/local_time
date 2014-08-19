@@ -43,7 +43,7 @@ strftime = (time, formatString) ->
       when 'H' then pad hour
       when 'I' then pad strftime time, '%l'
       when 'l' then (if hour is 0 or hour is 12 then 12 else (hour + 12) % 12)
-      when 'm' then pad month + 1
+      when 'm' then month + 1
       when 'M' then pad minute
       when 'p' then (if hour > 11 then 'PM' else 'AM')
       when 'P' then (if hour > 11 then 'pm' else 'am')
@@ -117,6 +117,21 @@ class RelativeTime
     else
       @formatDate()
 
+  toTwitterStyleString: ->
+    ms  = new Date().getTime() - @date.getTime()
+    sec = Math.round ms  / 1000
+
+    result = switch
+      when sec < 10 then "Just now"
+      when sec < 60 then "#{sec}s"
+      when (min = Math.round sec / 60) < 60 then "#{min}m"
+      when (hr  = Math.round min / 60) < 24 then "#{hr}h"
+      when (day = Math.round hr  / 24) < 30 then "#{day}d"
+      when day < 180 then strftime(@date, '%m/%d')
+      else strftime(@date, '%m/%d/%Y')
+
+    return result
+
   timeElapsed: ->
     ms  = new Date().getTime() - @date.getTime()
     sec = Math.round ms  / 1000
@@ -160,6 +175,7 @@ class RelativeTime
   formatTime: ->
     strftime @date, '%l:%M%P'
 
+
 relativeDate = (date) ->
   new RelativeTime(date).formatDate()
 
@@ -172,6 +188,9 @@ relativeTimeOrDate = (date) ->
 relativeWeekday = (date) ->
   if day = new RelativeTime(date).relativeWeekday()
     day.charAt(0).toUpperCase() + day.substring(1)
+
+relativeTwitter = (date) ->
+  new RelativeTime(date).toTwitterStyleString()
 
 
 domLoaded = false
@@ -221,6 +240,8 @@ document.addEventListener "DOMContentLoaded", ->
           relativeTimeOrDate time
         when "weekday"
           relativeWeekday(time) ? ""
+        when "twitter"
+          relativeTwitter time
 
 run = ->
   event = document.createEvent "Events"
