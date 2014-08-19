@@ -43,7 +43,7 @@ strftime = (time, formatString) ->
       when 'H' then pad hour
       when 'I' then pad strftime time, '%l'
       when 'l' then (if hour is 0 or hour is 12 then 12 else (hour + 12) % 12)
-      when 'm' then pad month + 1
+      when 'm' then month + 1
       when 'M' then pad minute
       when 'p' then (if hour > 11 then 'PM' else 'AM')
       when 'P' then (if hour > 11 then 'pm' else 'am')
@@ -173,6 +173,51 @@ relativeWeekday = (date) ->
   if day = new RelativeTime(date).relativeWeekday()
     day.charAt(0).toUpperCase() + day.substring(1)
 
+relativeTwitter = (date) ->
+  ms  = new Date().getTime() - date.getTime()
+  sec = Math.round ms  / 1000
+  # min = Math.round sec / 60
+  # hr  = Math.round min / 60
+
+  result = switch
+    when sec < 10 then "Just now"
+    when sec < 60 then "#{sec}s"
+    when (min = Math.round sec / 60) < 60 then "#{min}m"
+    when (hr  = Math.round min / 60) < 60 then "#{hr}h"
+    when (day = Math.round hr  / 24) < 30 then "#{day}d"
+    when day < 180 then strftime(date, '%m/%d')
+    else strftime(date, '%m/%d/%Y')
+
+  return result
+
+
+  # return "Just now" if sec < 10
+  # return "#{sec}s" if sec < 60
+  # return "#{min}m" if min < 60
+  # return "#{hr}h" if hr < 24
+
+
+  #   "Just now"
+  # elsif date < (Time.now - 30.days)
+  #   if date < (Time.now - 180.days)
+  #     date.strftime '%-m/%-d/%Y'
+  #   else
+  #     date.strftime '%-m/%-d'
+  #   end
+  # else
+  #   seconds_ago = (Time.now - date).to_i
+  #   if seconds_ago > 86400
+  #     "#{seconds_ago/60/60/24}d"
+  #   elsif seconds_ago > 3600
+  #     "#{seconds_ago/60/60}h"
+  #   elsif seconds_ago > 60
+  #     "#{seconds_ago/60}m"
+  #   elsif seconds_ago > 5
+  #     "#{seconds_ago}s"
+  #   else
+  #     "Just now"
+  #   end
+  # end
 
 domLoaded = false
 
@@ -221,6 +266,8 @@ document.addEventListener "DOMContentLoaded", ->
           relativeTimeOrDate time
         when "weekday"
           relativeWeekday(time) ? ""
+        when "twitter"
+          relativeTwitter time
 
 run = ->
   event = document.createEvent "Events"

@@ -11,7 +11,7 @@ momentMap =
   "%H": "HH"
   "%I": "hh"
   "%l": "h"
-  "%m": "MM"
+  "%m": "M"
   "%M": "mm"
   "%p": "A"
   "%P": "a"
@@ -45,4 +45,3 @@ for day in [0..30] by 6
 
           text = getText el
           ok /^\w{3,4}$/.test(text), "#{text} doesn't look like a timezone"
-
