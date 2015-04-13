@@ -102,12 +102,12 @@ class RelativeTime
     if ago = @timeElapsed()
       "#{ago} ago"
 
-    # Yesterday: "Saved yesterday at 8:15am"
-    # This week: "Saved Thursday at 8:15am"
+      # Yesterday: "Saved yesterday at 8:15am"
+      # This week: "Saved Thursday at 8:15am"
     else if day = @relativeWeekday()
       "#{day} at #{@formatTime()}"
 
-    # Older: "Saved on Dec 15"
+      # Older: "Saved on Dec 15"
     else
       "on #{@formatDate()}"
 
@@ -127,6 +127,21 @@ class RelativeTime
       when (min = Math.round sec / 60) < 60 then "#{min}m"
       when (hr  = Math.round min / 60) < 24 then "#{hr}h"
       when (day = Math.round hr  / 24) < 30 then "#{day}d"
+      when day < 180 then strftime(@date, '%m/%d')
+      else strftime(@date, '%m/%d/%Y')
+
+    return result
+
+  toTwitterAgoStyleString: ->
+    ms  = new Date().getTime() - @date.getTime()
+    sec = Math.round ms  / 1000
+
+    result = switch
+      when sec < 10 then "Just now"
+      when sec < 60 then "#{sec}s ago"
+      when (min = Math.round sec / 60) < 60 then "#{min}m ago"
+      when (hr  = Math.round min / 60) < 24 then "#{hr}h ago"
+      when (day = Math.round hr  / 24) < 30 then "#{day}d ago"
       when day < 180 then strftime(@date, '%m/%d')
       else strftime(@date, '%m/%d/%Y')
 
@@ -192,6 +207,8 @@ relativeWeekday = (date) ->
 relativeTwitter = (date) ->
   new RelativeTime(date).toTwitterStyleString()
 
+relativeTwitterAgo = (date) ->
+  new RelativeTime(date).toTwitterAgoStyleString()
 
 domLoaded = false
 
@@ -242,6 +259,8 @@ document.addEventListener "DOMContentLoaded", ->
           relativeWeekday(time) ? ""
         when "twitter"
           relativeTwitter time
+        when "twitter-ago"
+          relativeTwitterAgo time
 
 run = ->
   event = document.createEvent "Events"
