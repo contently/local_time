@@ -1,0 +1,19 @@
+{
+  "name": "local_time",
+  "version": "1.0.0",
+  "description": "Local Time is a Rails engine with helpers and JavaScript for displaying times and dates to users in their local time. The helpers render a `<time>` element and the JavaScript swoops in to convert and format. The helper output is ideal for caching since it's always in UTC time.",
+  "main": "app/assets/javascripts/local_time.js.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contently/local_time.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/contently/local_time/issues"
+  },
+  "homepage": "https://github.com/contently/local_time#readme"
+}
