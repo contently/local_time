@@ -98,6 +98,9 @@ Preset time and date formats that vary with age. The available types are `date`,
 * `time-ago` See above. `local_time_ago` calls `local_relative_time` with this `:type` option.
 * `time-or-date` Displays the time if it occurs today or the date if not. "3:26pm" or "Apr 11"
 * `weekday` Displays "Today", "Yesterday", or the weekday (e.g. Wednesday) if the time is within a week of today.
+* `twitter` Displays in the Twitter timeline style, i.e. "5s", "1m", "5h", "6d", "3/9", "3/9/10"
+
+**Note: ** There is no 0-padding of months to support the Twitter formating
 
 #### Installation
 
